@@ -1,0 +1,75 @@
+<div>
+  <h1>Lista de Productos</h1>
+
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col"> CODE </th>
+          <th scope="col"> TITLE </th>
+          <th scope="col"> DESCRIPTION </th>
+          <th scope="col"> PRICE </th>
+          <th scope="col"> STOCK </th>
+          <th><button id="logoutButton">Logout</button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products.docs}}
+        <tr>
+          <td> {{this.code}}</td>
+          <td> {{this.title}}</td>
+          <td> {{this.description}}</td>
+          <td> ${{this.price}} </td>
+          <td> {{this.stock}} </td>
+        </tr>
+        {{/each}}
+
+      </tbody>
+
+    </table>
+    <div class="position-relative m-4">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {{#if products.hasPrevPage}}
+          <li class="page-item"><a class="page-link"
+              href="/products?page={{products.prevPage}}&&limit={{products.limit}}">Previous</a>
+          </li>
+          {{/if}}
+          {{#if products.hasNextPage}}
+          <li class="page-item"><a class="page-link"
+              href="/products?page={{products.nextPage}}&&limit={{products.limit}}">Next</a></li>
+          {{/if}}
+        </ul>
+      </nav>
+      <p class="btn btn-primary">
+        Current Page:
+        {{products.page}}
+      </p>
+
+    </div>
+
+{{#if user}}
+<div id="welcomeMessage" style="display: none;">
+  Bienvenid@, {{user.name}}!
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var welcomeMessage = document.getElementById('welcomeMessage');
+    if (welcomeMessage) {
+      Toastify({
+        text: welcomeMessage.textContent,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#4fbe87",
+      }).showToast();
+    }
+  });
+</script>
+{{/if}}
+
+    <script src="/js/logout.js"></script>
+  </div>
+</div>
