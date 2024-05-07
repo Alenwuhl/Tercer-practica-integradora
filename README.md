@@ -1,84 +1,92 @@
-# Advances in the Ecommerce Backend
+# Proyecto Backend de Ecommerce con Node.js
 
-This project is an ecommerce web application designed as part of a series of deliveries for a backend development course. The application enables users to register, log in, and explore the product catalog, simulating a shopping process up to but excluding the payment step. Users benefit from special functionalities depending on their role. The available roles are user, premium, and admin, each offering a unique set of capabilities within the application.
+## Descripción
 
-## Getting Started
+Este es un proyecto de backend en Node.js que proporciona todas las funcionalidades necesarias para un ecommerce, excepto la parte de pago. Para interactuar con las rutas puedes usar Postman o puedes ver el proceso básico a través de [este enlace](link), donde he desplegado un frontend básico que muestra las principales rutas de mi proyecto.
 
-To begin using the application, you need to register and log in, as detailed below. The application's design focuses on ease of use, providing a secure and personalized experience for every user.
+El proyecto utiliza MongoDB y se puede configurar para trabajar tanto con un enfoque de factory como con el modelo de repository.
 
-### Registration and Setup
+## Uso
 
-For your initial setup and registration on the application, follow these steps:
+Para comenzar a usar la aplicación, es necesario registrarse e iniciar sesión, como se detalla a continuación. El diseño de la aplicación se enfoca en la facilidad de uso, proporcionando una experiencia segura y personalizada para cada usuario.
+En caso de registrarte a traves del frontend, te registrarás con rol "user". En caso de hacerlo desde postman podras incluir un "role" ya sea "user", "admin" o "premium". Estas ultimas tienen autorizaciones que el usuario normal no tiene.
 
-- Navigate to the endpoint `/api/users/register` using an API tool such as Postman.
-- Submit your personal information in the request body, including `first_name`, `last_name`, `email`, `age`, and `password`.
-- To register with administrator permissions, be sure to include the role of "admin" in your registration data. Similarly, you can register as a "premium" user by specifying the role of "premium".
+## Registro e Inicio de Sesión
 
-After registering, log in by:
+Para el registro e inicio en la aplicación, sigue estos pasos:
 
-- Heading to the endpoint `/api/users/login`.
-- Entering your registered email and password.
-- Successful login will keep your session active for a limited time, during which you can access all the application's features.
+1. Ve al endpoint **`/api/users/register`** usando una herramienta como Postman.
+2. Envía tu información personal en el cuerpo de la solicitud, incluyendo `first_name`, `last_name`, `email`, `age` y `password`.
+3. Para registrarte con permisos de administrador, asegúrate de incluir el rol de **`admin`** en tus datos de registro. Del mismo modo, puedes registrarte como usuario **`premium`** especificando el rol de **`premium`**.
 
-### User Routes (/api/users):
+Después de registrarte, inicia sesión de la siguiente manera:
 
-- **GET /** - Retrieves all users.
-- **GET /current** - Returns a DTO with the relevant data of the active user.
-- **POST /process-to-reset-password** - Starts the process (via email) to reset the password if required.
-- **POST /resetPassword/:token** - Executes the password change after the process has been initiated with the previous route. The token has a one-hour expiration.
-- **POST /register** - Registers a new user.
-- **POST /login** - Logs in a user.
-- **POST /premium/:uid** - Allows a user or premium user to switch their role from one to the other by passing the user's id in params and the new role in the body.
+1. Dirígete al endpoint **`/api/users/login`**.
+2. Ingresa tu `email` registrado y `password`.
+3. Si el inicio de sesión es exitoso, tu sesión permanecerá activa por un tiempo limitado, durante el cual podrás acceder a todas las funcionalidades de la aplicación.
 
-### Product and Cart Routes:
+## Rutas de Usuarios (`/api/users`)
 
-#### /api/carts:
+- **GET `/`** - Recupera todos los usuarios.
+- **GET `/current`** - Devuelve un DTO con los datos relevantes del usuario activo.
+- **POST `/process-to-reset-password`** - Inicia el proceso (vía correo electrónico) para restablecer la contraseña si es necesario.
+- **POST `/resetPassword/:token`** - Cambia la contraseña después de haber iniciado el proceso con la ruta anterior. El token tiene una validez de una hora.
+- **POST `/register`** - Registra a un nuevo usuario.
+- **POST `/login`** - Inicia sesión de un usuario.
+- **POST `/premium/:uid`** - Permite a un usuario o usuario premium cambiar su rol a premium o viceversa pasando el ID del usuario en los parámetros y el nuevo rol en el cuerpo de la solicitud. Debes agregar los documentos requeridos.
+- **DELETE `/deleteInactiveUsers`** - Permite borrar los suarios sin actividad en los ultimos 48 horas.
+- **DELETE `/user/:uid`** - Permite borrar un usuario por su id.
 
-- **POST /:cid/purchase** - Finalizes the purchase in a specific cart.
-- **GET /** - Retrieves the carts.
-- **GET /:cid** - Retrieves a specific cart.
-- **POST /**, authorization (["user", "premium"]) - Adds products to the cart. For premium users, this is valid as long as they are not the owner of the product.
-- **POST /cart/:cartId/product** - Adds a product to an existing cart.
-- **DELETE /cart/:cartId/product/:productId** - Deletes a product from the cart.
-- **DELETE /cart/:cartId** - Deletes a cart.
 
-#### /api/products:
+## Rutas de Productos y Carritos
 
-- **GET /** - Fetches all products.
-- **GET /:pID** - Fetches a specific product by ID.
-- **POST /**, authorization (['admin', 'premium']) - Creates a new product.
-- **PUT /:pid**, authorization('admin') - Allows the admin to update a product.
-- **DELETE /:pid**, authorization (['admin', 'premium']) - Allows the admin and premium user to delete a product. A premium role user can only delete products where they are the owner.
+### `/api/carts`:
 
-### Deployment
+- **POST `/:cid/purchase`** - Finaliza la compra en un carrito específico.
+- **GET `/`** - Recupera los carritos.
+- **GET `/:cid`** - Recupera un carrito específico.
+- **POST `/`**, `authorization (["user", "premium"])` - Añade productos al carrito. Para usuarios premium, esto es válido siempre que no sean los propietarios del producto.
+- **POST `/cart/:cartId/product`** - Añade un producto a un carrito existente.
+- **DELETE `/cart/:cartId/product/:productId`** - Elimina un producto del carrito.
+- **DELETE `/cart/:cartId`** - Elimina un carrito.
 
-For now, this project can be deployed on local servers.
+### `/api/products`:
 
-### Built With
+- **GET `/`** - Obtiene todos los productos.
+- **GET `/:pID`** - Obtiene un producto específico por ID.
+- **POST `/`**, `authorization (['admin', 'premium'])` - Crea un nuevo producto.
+- **PUT `/:pid`**, `authorization('admin')` - Permite al administrador actualizar un producto.
+- **DELETE `/:pid`**, `authorization (['admin', 'premium'])` - Permite al administrador y al usuario premium eliminar un producto. Un usuario con rol premium solo puede eliminar productos de los que sea propietario.
 
-- **Node.js** - The runtime environment for JavaScript.
-- **Express** - The framework for web applications.
-- **MongoDB** - The database system.
+## Despliegue
 
-### Authors
+Por ahora, este proyecto puede ser desplegado en servidores locales. o puedes probar las funcionalidades basicas a traves del link de desplieqgue en la descripcion.
 
-- Alen Wuhl
+## Construido con
 
-### Note
+- **Node.js** - Entorno de ejecución para JavaScript.
+- **Express** - Framework para aplicaciones web.
+- **MongoDB** - Sistema de bases de datos.
 
-Specific functionalities for users with certain roles, such as user, premium, or admin, can be tested by logging in with the following credentials:
+## Autores
 
-For basic user functionalities:
+- **Alen Wuhl**
 
-- **Email**: "user@example.com"
-- **Password**: "User123"
+## Nota
 
-For premium user functionalities:
+Puedes probar funcionalidades específicas para usuarios con ciertos roles, como `user`, `premium` o `admin`, iniciando sesión con las siguientes credenciales:
 
-- **Email**: "premium@example.com"
-- **Password**: "premium123"
+### Funcionalidades para usuario básico:
 
-For admin functionalities:
+- **Email**: `"user@example.com"`
+- **Password**: `"User123"`
 
-- **Email**: "admin@gmail.com"
-- **Password**: "Admin123"
+### Funcionalidades para usuario premium:
+
+- **Email**: `"premium@example.com"`
+- **Password**: `"premium123"`
+
+### Funcionalidades para administrador:
+
+- **Email**: `"admin@example.com"`
+- **Password**: `"Admin123"`
